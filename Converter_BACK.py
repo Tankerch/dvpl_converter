@@ -6,10 +6,10 @@ import lz4.frame
 import zlib
 import os
 import msvcrt
-from struct import *
+from struct import pack
 
-extension = ['.dds', '.pvr', '.txt', '.tex', '.fev', '.fsb', '.webp', '.yaml', '.xml']
-extension_00 = ['.webp', '.tex']
+extension = ['.dds', '.pvr', '.txt', '.tex', '.fev', '.fsb', '.webp', '.yaml', '.xml', '.webp']
+extension_00 = ['.tex']
 
 #konversi dari LZ4 ke DVPL
 def buildDVPL(compressed, input_size, compressed_type = 2 ):
@@ -51,7 +51,7 @@ while True:
         break
 
 #Hapus file atau tidak?
-jawaban = input("\nApakah anda ingin menghapus file sumber/asli? Y/N\n")
+jawaban = input("\nApakah anda ingin menghapus file sumber/asli? Y/N \n")
 while True:
     if jawaban is 'Y' or jawaban is 'y' :
         DeleteConfirm = True

@@ -9,15 +9,15 @@ import lz4.frame
 
 # Extension, compression type & vars
 EXTENSION: list = ['.dds', '.pvr', '.txt', '.fev',
-                   '.fsb', '.webp', '.yaml', '.xml', '.webp']
+                   '.fsb', '.webp', '.yaml', '.xml', '.webp', '.mp3']
 EXTENSION_00: list = ['.tex']
 
 PATH: str = os.getcwd()
 
 
 class CompressionType(enum.Enum):
-    HIGH_COMPRESSION: int = 1
-    MAX_COMPRESSION: int = 2
+    HIGH_COMPRESSION: int = 2
+    MAX_COMPRESSION: int = 0
 
 # MAIN CODE
 
@@ -89,17 +89,22 @@ def CREATE_DVPL(COMPRESION_TYPE: int, FILE_PATH: str) -> None:
         file.write(FORMAT_WG_DVPL(LZ4_CONTENT, ORIGINAL_SIZE, COMPRESION_TYPE))
 
 
-def FORMAT_WG_DVPL(LZ4_CONTENT: bytearray, ORIGINAL_SIZE: int, COMPRESION_TYPE: int) -> bytearray:
+def FORMAT_WG_DVPL(LZ4_CONTENT: bytearray, ORIGINAL_SIZE: int, COMPRESION_TYPE: CompressionType) -> bytearray:
     ''' Format from LZ4 compression to WG DVPL '''
     LZ4_CONTENT: bytearray = LZ4_CONTENT[19:-4]  # Strip LZ4 Header and Footer
     LZ4_SIZE: int = len(LZ4_CONTENT)
 
     # Calculate CRC32, for what? IDK LOL ask WG
     CRC32: int = crc32(LZ4_CONTENT) & 0xffffffff
+    COMPRESION_TYPE_INT: int
+    if COMPRESION_TYPE == CompressionType.HIGH_COMPRESSION:
+        COMPRESION_TYPE_INT: int = 2
+    else:
+        COMPRESION_TYPE_INT: int = 0
 
     DVPL_TEXT: bytearray = bytearray('DVPL', 'utf-8')
     DVPL_FOOTER: bytes = pack('LLLHH', ORIGINAL_SIZE, LZ4_SIZE,
-                              CRC32, COMPRESION_TYPE, 0)
+                              CRC32, COMPRESION_TYPE_INT, 0)
 
     return LZ4_CONTENT + DVPL_FOOTER + DVPL_TEXT
 

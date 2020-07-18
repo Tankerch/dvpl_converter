@@ -1,4 +1,4 @@
-# DVPL_Converter
+# DVPL Converter C# Edition
 
 Menkonversi file non-DVPL menjadi format DVPL
 
@@ -24,6 +24,11 @@ File DVPL adalah file non-dvpl yang dikompres dalam format LZ4_HC, dengan header
 > compressionType,
 > PackFormat::FILE_MARKER_LITE}
 
+## Build
+- Target .NET Framework >= 4.7.2
+- Menginstall libraries (Disarankan menggunakan NuGet)
+
 ## Libraries yang digunakan
 
-1.  **python-lz4** : _Interface_ python untuk pengkompresan LZ4 (https://python-lz4.readthedocs.io/en/stable/)
+1. **crc32 NET** : Untuk menkalkulasi CRC32
+2. **K4os.Compression.LZ4** : Kompres file dengan metode LZ4

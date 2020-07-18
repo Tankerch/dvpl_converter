@@ -44,7 +44,6 @@ namespace DVPL_Converter
 
         static bool GET_DELETE_CONFIRMATION()
         {
-            return false;
             Console.WriteLine("Do you want to delete the original files? Y/N");
             while (true)
             {

@@ -54,13 +54,14 @@ func convertFileToDVPL(path string) {
 // encryptCmd represents the encrypt command
 var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Compress all files to .dvpl",
+	Long: `Compress all files to .dvpl
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example:
+- dvpl_converter encrypt (Compress all files, included subfolder in current directory)
+- dvpl_converter encrypt -d 3d (Compress all files, included subfolder in 3d's folder)
+- dvpl_converter encrypt -d 3d --delete-original (Delete original file after compres all files in 3d's folder)
+- dvpl_converter encrypt -d 3d/Tanks/France/Images/B1.mali.pvr.dvpl (Compress only this file)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		absName, err := filepath.Abs(inputDirPath)
 		if err != nil {
@@ -93,6 +94,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(encryptCmd)
-	encryptCmd.Flags().StringVarP(&inputDirPath, "dir", "d", ".", "Help message for toggle")
-	encryptCmd.Flags().BoolVar(&deleteOriginalFlag, "delete-original", false, "Help message for toggle")
+	encryptCmd.Flags().StringVarP(&inputDirPath, "dir", "d", ".", "Specify the input directory/file path, The path can be absolute or relative")
+	encryptCmd.Flags().BoolVar(&deleteOriginalFlag, "delete-original", false, `Delete original file after conversion. Warning: This action is irreversible.`)
 }

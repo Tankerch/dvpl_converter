@@ -54,13 +54,14 @@ func convertDVPLtoFile(path string) {
 // decryptCmd represents the decrypt command
 var decryptCmd = &cobra.Command{
 	Use:   "decrypt",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Decompress all .dvpl to respective format",
+	Long: `Decompress all .dvpl to respective format
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Example:
+- dvpl_converter decrypt (Decompress all files, included subfolder in current directory)
+- dvpl_converter decrypt -d 3d (Decompress all files, included subfolder in 3d's folder)
+- dvpl_converter decrypt -d 3d --delete-original (Delete original file after decompres all files in 3d's folder)
+- dvpl_converter decrypt -d 3d/Tanks/France/Images/B1.mali.pvr.dvpl (Decompress only this file)`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Start decrypting:")
 		dirInfo, err := os.Stat(inputDirPath)
@@ -88,6 +89,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(decryptCmd)
-	decryptCmd.Flags().StringVarP(&inputDirPath, "dir", "d", ".", "Help message for toggle")
-	decryptCmd.Flags().BoolVar(&deleteOriginalFlag, "delete-original", false, "Help message for toggle")
+	decryptCmd.Flags().StringVarP(&inputDirPath, "dir", "d", ".", "Specify the input directory/file path, The path can be absolute or relative")
+	decryptCmd.Flags().BoolVar(&deleteOriginalFlag, "delete-original", false, `Delete original file after conversion. Warning: This action is irreversible.`)
 }

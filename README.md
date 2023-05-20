@@ -1,34 +1,40 @@
-# DVPL Converter C# Edition
+# DVPL Converter
 
-Menkonversi file non-DVPL menjadi format DVPL
+This is a CLI program that converts files to and from the WG WoTB DVPL format.
 
-![Demo](Demo.jpg)
+![Demo](img/demo.gif)
 
-Tulisan dibawah ini adalah rangkuman referensi dari https://libraries.io/github/Maddoxkkm/dvpl_converter
+The following text is a summary of references from [maddoxkkm repository](github.com/maddoxkkm/dvpl_converter) & [archive](https://libraries.io/github/Maddoxkkm/dvpl_converter)
 
-## Hubungan DVPL dengan LZ4
+## About DVPL
 
-`.dvpl` adalah format file baru yang pertama kali terlihat digunakan di World of Tanks Blitz Client untuk Server Cina, dan juga baru-baru ini terlihat di Public Open Test Server.
+`.dvpl` is a new file format that is first seen used in the World of Tanks Blitz Client for Chinese Server, and now it's used on all known clients, except files that are contained within Android apks.
 
-Konverter ini bertujuan untuk dapat mengkonversi secara langsung antara file .dvpl dan non-dvpl standar menggunakan bahasa python.
+## DVPL Specification:
 
-## Hal-hal yang telah diidentifikasi:
+- Starts with stream of Byte data, can be compressed or uncompressed.
+- The last 20 bytes in DVPL files are in the following format:
+  - UINT32LE input size in Byte
+  - UINT32LE compressed block size in Byte
+  - UINT32LE compressed block crc32
+  - UINT32LE compression Type
+    - 0: no compression (format used in all uncompressed `.dvpl` files from SmartDLC)
+    - 1: LZ4 (not observed but handled by this decompressor)
+    - 2: LZ4_HC (format used in all compressed `.dvpl` files from SmartDLC)
+    - 3: RFC1951 (not implemented in this decompressor since it's not observed)
+  - 32-bit Magic Number represents "DVPL" literals in utf8 encoding, encoded in big-Endian.
 
-File DVPL adalah file non-dvpl yang dikompres dalam format LZ4_HC, dengan header yang dibuang dan ditambahkan beberapa note dibawahnya sebagai gantinya.
+## Usage
 
-20 byte terakhir dalam file DVPL berada dalam format berikut, dengan masing-masing atribut tambahan sebanyak 4 byte:
+- Download the program from the [release page]()
+- (Optional) Place the program in the same directory as the files you want to convert
+- Run the program from cmd/terminal with the following commands
+  - Interactive: `./dvpl_converter`
+  - Convert file to DVPL: `./dvpl_converter encrypt`
+  - Convert DVPL to file: `./dvpl_converter decrypt`
 
-> {sizeUncompressed,
-> sizeCompressed,
-> crc32Compressed,
-> compressionType,
-> PackFormat::FILE_MARKER_LITE}
+> You can run `dvpl_converter --help` for more details about commands and flags
 
-## Build
-- Target .NET Framework >= 4.7.2
-- Menginstall libraries (Disarankan menggunakan NuGet)
+## Build Requirments
 
-## Libraries yang digunakan
-
-1. **crc32 NET** : Untuk menkalkulasi CRC32
-2. **K4os.Compression.LZ4** : Kompres file dengan metode LZ4
+- go >= 1.19

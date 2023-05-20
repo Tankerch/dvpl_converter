@@ -51,6 +51,30 @@ func convertFileToDVPL(path string) {
 	fmt.Printf("\t%s\n", path)
 }
 
+func StartEcryption() {
+	fmt.Println("Start Encrypting:")
+	dirInfo, err := os.Stat(inputDirPath)
+	if err != nil {
+		panic(err)
+	}
+
+	// dirPath is single file
+	if !dirInfo.IsDir() {
+		convertFileToDVPL(inputDirPath)
+		return
+	}
+
+	// dirPath is Directory, included default value (cwd)
+	filepath.WalkDir(inputDirPath, func(path string, d fs.DirEntry, ___ error) error {
+		if d.IsDir() {
+			return nil
+		}
+		convertFileToDVPL(path)
+		return nil
+	})
+
+}
+
 // encryptCmd represents the encrypt command
 var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
@@ -63,32 +87,7 @@ Example:
 - dvpl_converter encrypt -d 3d --delete-original (Delete original file after compres all files in 3d's folder)
 - dvpl_converter encrypt -d 3d/Tanks/France/Images/B1.mali.pvr.dvpl (Compress only this file)`,
 	Run: func(cmd *cobra.Command, args []string) {
-		absName, err := filepath.Abs(inputDirPath)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Printf("absname: %s | Dirpath: %s\n", absName, inputDirPath)
-		fmt.Println("Start Encrypting:")
-		dirInfo, err := os.Stat(inputDirPath)
-		if err != nil {
-			panic(err)
-		}
-
-		// dirPath is single file
-		if !dirInfo.IsDir() {
-			convertFileToDVPL(inputDirPath)
-			return
-		}
-
-		// dirPath is Directory, included default value (cwd)
-		filepath.WalkDir(inputDirPath, func(path string, d fs.DirEntry, ___ error) error {
-			if d.IsDir() {
-				return nil
-			}
-			convertFileToDVPL(path)
-			return nil
-		})
-
+		StartEcryption()
 	},
 }
 

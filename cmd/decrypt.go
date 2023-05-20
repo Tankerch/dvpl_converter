@@ -51,6 +51,30 @@ func convertDVPLtoFile(path string) {
 	fmt.Printf("\t%s\n", path)
 }
 
+func StartDecrypting() {
+	fmt.Println("Start decrypting:")
+	dirInfo, err := os.Stat(inputDirPath)
+	if err != nil {
+		panic(err)
+	}
+
+	// dirPath is single file
+	if !dirInfo.IsDir() {
+		convertDVPLtoFile(inputDirPath)
+		return
+	}
+
+	// dirPath is Directory, included default value (cwd)
+	filepath.WalkDir(inputDirPath, func(path string, d fs.DirEntry, ___ error) error {
+		if d.IsDir() {
+			return nil
+		}
+		convertDVPLtoFile(path)
+		return nil
+	})
+
+}
+
 // decryptCmd represents the decrypt command
 var decryptCmd = &cobra.Command{
 	Use:   "decrypt",
@@ -63,27 +87,7 @@ Example:
 - dvpl_converter decrypt -d 3d --delete-original (Delete original file after decompres all files in 3d's folder)
 - dvpl_converter decrypt -d 3d/Tanks/France/Images/B1.mali.pvr.dvpl (Decompress only this file)`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Start decrypting:")
-		dirInfo, err := os.Stat(inputDirPath)
-		if err != nil {
-			panic(err)
-		}
-
-		// dirPath is single file
-		if !dirInfo.IsDir() {
-			convertDVPLtoFile(inputDirPath)
-			return
-		}
-
-		// dirPath is Directory, included default value (cwd)
-		filepath.WalkDir(inputDirPath, func(path string, d fs.DirEntry, ___ error) error {
-			if d.IsDir() {
-				return nil
-			}
-			convertDVPLtoFile(path)
-			return nil
-		})
-
+		StartDecrypting()
 	},
 }
 

@@ -14,30 +14,30 @@ import (
 	"github.com/tankerch/dvpl_converter/common/utils"
 )
 
-func convertFileToDVPL(path string) {
+func convertFileToDVPL(path string) error {
 	// Validation
-	fileIsDVPL := utils.IsDVPLFile(path)
-	if fileIsDVPL {
-		return
+	isDVPL := utils.IsDVPL(path)
+	if isDVPL {
+		return fmt.Errorf("%s skipped, is DVPL file", path)
 	}
 
 	// Input
 	fileBuf, err := os.ReadFile(path)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("%s failed to read file", path)
 	}
 
 	// Processed
 	outputBuf, err := dvpl.EncryptDVPL(fileBuf)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("%s failed to encrypt", path)
 	}
 
 	// Output
 	var outputPath = fmt.Sprintf("%s.dvpl", path)
 	fout, err := os.Create(outputPath)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("%s failed to create output", path)
 	}
 	defer fout.Close()
 	fout.Write(outputBuf)
@@ -45,22 +45,27 @@ func convertFileToDVPL(path string) {
 	// (Optional) Delete original
 	if deleteOriginalFlag {
 		if err := os.Remove(path); err != nil {
-			panic(err)
+			return fmt.Errorf("%s failed to delete original file", path)
 		}
 	}
-	fmt.Printf("\t%s\n", path)
+	return nil
 }
 
 func StartEcryption() {
 	fmt.Println("Start Encrypting:")
 	dirInfo, err := os.Stat(inputDirPath)
 	if err != nil {
-		panic(err)
+		fmt.Printf("Failed to access %s\n", inputDirPath)
+		return
 	}
 
 	// dirPath is single file
 	if !dirInfo.IsDir() {
-		convertFileToDVPL(inputDirPath)
+		if err := convertFileToDVPL(inputDirPath); err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Printf("- %s\n", inputDirPath)
 		return
 	}
 
@@ -69,7 +74,12 @@ func StartEcryption() {
 		if d.IsDir() {
 			return nil
 		}
-		convertFileToDVPL(path)
+		if err := convertFileToDVPL(path); err != nil {
+			fmt.Println(err)
+			return nil
+		}
+
+		fmt.Printf("%s succesfully converted\n", path)
 		return nil
 	})
 

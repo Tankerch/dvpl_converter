@@ -4,6 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -26,7 +27,8 @@ and now it's used on all known clients, except files that are contained within A
 	Run: func(cmd *cobra.Command, args []string) {
 		cwd, err := os.Getwd()
 		if err != nil {
-			panic(err)
+			fmt.Println("failed to get current directory")
+			return
 		}
 
 		qs := []*survey.Question{
@@ -64,7 +66,7 @@ and now it's used on all known clients, except files that are contained within A
 
 		err = survey.Ask(qs, &answers)
 		if err != nil {
-			panic(err)
+			fmt.Println("failed create survey prompt")
 		}
 		inputDirPath = answers.Directory
 		deleteOriginalFlag = !answers.KeepOriginal

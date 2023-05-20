@@ -5,19 +5,19 @@ import (
 	"path/filepath"
 )
 
-func IsDVPLFile(filename string) bool {
+func IsDVPL(filename string) bool {
 	return filepath.Ext(filename) == ".dvpl"
 }
 
 func IsProgramFile(filename string) bool {
 	exePath, err := os.Executable()
 	if err != nil {
-		panic(err)
+		return false
 	}
 
 	absPath, err := filepath.Abs(filename)
 	if err != nil {
-		panic(err)
+		return false
 	}
 	return absPath == exePath
 }

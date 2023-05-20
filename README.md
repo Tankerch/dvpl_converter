@@ -26,7 +26,7 @@ The following text is a summary of references from [maddoxkkm repository](github
 
 ## Usage
 
-- Download the program from the [release page]()
+- Download the program from the [release page](https://github.com/Tankerch/dvpl_converter/releases)
 - (Optional) Place the program in the same directory as the files you want to convert
 - Run the program from cmd/terminal with the following commands
   - Interactive: `./dvpl_converter`
